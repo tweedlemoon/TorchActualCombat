@@ -18,6 +18,7 @@ def plot_curve(data):
 # 画图片使用，可视化识别结果
 def plot_image(img, label, name):
     fig = plt.figure()
+    # 显示2*3=6张图
     for i in range(6):
         plt.subplot(2, 3, i + 1)
         plt.tight_layout()
@@ -31,7 +32,7 @@ def plot_image(img, label, name):
 
 
 # 独热编码
-def ont_hot(label, depth=10):
+def one_hot(label, depth=10):
     out = torch.zeros(label.size(0), depth)
     idx = torch.LongTensor(label).view(-1, 1)
     out.scatter_(dim=1, index=idx, value=1)
