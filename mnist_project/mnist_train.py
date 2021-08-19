@@ -54,7 +54,7 @@ test_load = torch.utils.data.DataLoader(torchvision.datasets.MNIST(
 # 显示加载图片
 x, y = next(iter(train_load))
 print(x.shape, y.shape)
-# plot_image(x, y, 'sample')
+plot_image(x, y, 'sample')
 
 '''
 2. 创建神经网络
@@ -124,7 +124,7 @@ for epoch in range(iteration_num):
         train_loss.append(loss.item())
 
         if batch_idx % 10 == 0:
-            print('epoch:', epoch, 'batch_idx:', batch_idx, 'loss data:', loss.item())
+            print('epoch:', epoch, 'batch_idx:', batch_idx, 'loss = ', loss.item())
 
 plot_curve(train_loss)
 
@@ -151,4 +151,4 @@ print('accuracy:', acc)
 x, y = next(iter(test_load))
 out = net(x.view(x.size(0), 784))
 predict = out.argmax(dim=1)
-plot_image(x, predict, 'test')
+plot_image(x, predict, 'Recognition Result')
