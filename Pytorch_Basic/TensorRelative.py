@@ -13,7 +13,6 @@ import numpy as np
 
 # %%
 
-
 # float = float32
 # double = float64
 # half = float16
@@ -79,6 +78,7 @@ a = torch.Tensor(a)
 print('a =', a, '\n', 'a_TYPE =', a.type())
 print('a_SHAPE = ', a.shape)
 
+# 这也是初始化经常使用的方法
 a = torch.Tensor(2, 3)
 print('a =', a, '\n', 'a_TYPE =', a.type())
 print('a_SHAPE = ', a.shape)
@@ -128,3 +128,13 @@ a = torch.rand(2, 3, 28, 28)
 print(a.numel())
 # 维度
 print(a.dim())
+
+# %%
+# 初始化
+a = torch.rand(2, 3, 4)
+print('a =', a, '\n', 'a_TYPE =', a.type())
+b = torch.rand_like(a)
+print('b =', b, '\n', 'b_TYPE =', b.type())
+# randint(最小值，最大值，tensor尺寸列表)
+a = torch.randint(1, 10, [3, 3])
+print('a =', a, '\n', 'a_TYPE =', a.type())
