@@ -138,3 +138,200 @@ print('b =', b, '\n', 'b_TYPE =', b.type())
 # randint(最小值，最大值，tensor尺寸列表)
 a = torch.randint(1, 10, [3, 3])
 print('a =', a, '\n', 'a_TYPE =', a.type())
+
+# %%
+a = torch.randn(1, 2, 3, 4)
+print(a)
+# 直接索引
+print(a[0])
+print(a[0, 1])
+print(a[0, 1, 2])
+print(a[0, 1, 2, 1])
+print(a[0, 1, 2, ::2])
+print(a.index_select(2, torch.tensor([0, 1])))
+print(a.index_select(2, torch.arange(2)))
+print(a[0, 1, ...])
+
+print(a[0, :, :, 2])
+print(a[0, ..., 2])
+
+# %%
+x = torch.randn(3, 4)
+print(x)
+mask = x.ge(0)
+print(mask)
+result = torch.masked_select(x, mask)
+print(result)
+
+# %%
+x = torch.randn(5, 3)
+print(x)
+y = x.view(15)
+z = x.view(-1, 5)  # -1所指的维度可以根据其他维度的值推出来
+print(x.size(), y.size(), z.size())
+print(y)
+print(z)
+
+# %%
+x = torch.randn(5, 3)
+y = x.view(15)
+print(x)
+print(y)
+x += 1
+print(x)
+print(y)  # 也加了1
+
+# %%
+x = torch.randn(5, 3)
+x_cp = x.clone().view(15)
+print(x)
+print(x_cp)
+x -= 1
+print(x)
+print(x_cp)
+
+# %%
+# arange(start,end,step)
+x = torch.arange(1, 3).view(1, 2)
+print(x)
+y = torch.arange(1, 4).view(3, 1)
+print(y)
+print(x + y)
+
+# %%
+x = torch.tensor([1, 2])
+y = torch.tensor([3, 4])
+id_before = id(y)
+y = y + x
+print(id(y) == id_before)  # False
+
+x = torch.tensor([1, 2])
+y = torch.tensor([3, 4])
+id_before = id(y)
+y[:] = y + x
+# also
+# y += x
+# torch.add(x, y, out=y)
+# y.add_(x)
+print(id(y) == id_before)  # True
+
+# %%
+a = torch.ones(5)
+b = a.numpy()
+print(a, b)
+a += 1
+print(a, b)
+b += 1
+print(a, b)
+
+a = np.ones(5)
+b = torch.from_numpy(a)
+print(a, b)
+a += 1
+print(a, b)
+b += 1
+print(a, b)
+
+# %%
+# 以下代码只有在PyTorch GPU版本上才会执行
+if torch.cuda.is_available():
+    device = torch.device("cuda")  # GPU
+    y = torch.ones_like(x, device=device)  # 直接创建一个在GPU上的Tensor
+    x = x.to(device)  # 等价于 .to("cuda")
+    z = x + y
+    print(z)
+    print(z.to("cpu", torch.double))  # to()还可以同时更改数据类型
+
+# %%
+x = torch.ones(2, 2, requires_grad=True)
+print(x)
+print(x.grad_fn)
+
+y = x + 2
+print(y)
+print(y.grad_fn)
+
+z = y * y * 3
+# z.mean就是返回矩阵所有元素加和的平均值
+out = z.mean()
+print(z, out)
+
+print(out)
+print(x)
+out.backward()  # 等价于 out.backward(torch.tensor(1.))
+print(x.grad)
+
+# 再来反向传播一次，注意grad是累加的
+out2 = x.sum()
+out2.backward()
+print(x.grad)
+
+out3 = x.sum()
+x.grad.data.zero_()
+out3.backward()
+print(x.grad)
+
+# %%
+a = torch.randn(2, 2)  # 缺失情况下默认 requires_grad = False
+a = ((a * 3) / (a - 1))
+print(a.requires_grad)  # False
+a.requires_grad_(True)
+print(a.requires_grad)  # True
+b = (a * a).sum()
+print(b.grad_fn)
+
+# %%
+x = torch.Tensor([1, 2, 3, 4])
+# x = torch.tensor([1, 2, 3, 4], requires_grad=True)
+x.requires_grad_(True)
+y = 2 * x * x
+print(y)
+z = y.sum()
+try:
+    x.grad.data.zero_()
+except:
+    pass
+z.backward()
+print(x.grad)
+
+# %%
+x = torch.tensor([1.0, 2.0, 3.0, 4.0], requires_grad=True)
+y = 2 * x
+z = y.view(2, 2)
+print(z)
+# 现在 z 不是一个标量，所以在调用backward时需要传入一个和z同形的权重向量进行加权求和得到一个标量。
+v = torch.tensor([[1.0, 0.1], [0.01, 0.001]], dtype=torch.float)
+z.backward(v)
+print(x.grad)
+
+# %%
+x = torch.tensor(1.0, requires_grad=True)
+y1 = x ** 2
+with torch.no_grad():
+    y2 = x ** 3
+y3 = y1 + y2
+
+# 原本为y3=x^2+x^3
+# 但是由于y2被阻断了，所以计算梯度时将y2刨除在外（类似于把y2当成了常量）
+# 结论就是2
+
+print(x.requires_grad)
+print(y1, y1.requires_grad)  # True
+print(y2, y2.requires_grad)  # False
+print(y3, y3.requires_grad)  # True
+
+y3.backward()
+print(x.grad)
+
+# %%
+x = torch.ones(1, requires_grad=True)
+
+print(x.data)  # 还是一个tensor
+print(x.data.requires_grad)  # 但是已经是独立于计算图之外，所以此处应为false
+
+y = 2 * x
+x.data *= 100  # 只改变了值，不会记录在计算图，所以不会影响梯度传播
+
+y.backward()
+print(x)  # 更改data的值也会影响tensor的值
+print(x.grad)
