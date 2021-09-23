@@ -26,7 +26,6 @@ plt.show()
 
 # 看ReLU的梯度（导数）
 y.sum().backward()
-# y.
 xyplot(x, x.grad, 'grad of relu')
 plt.show()
 
@@ -40,4 +39,15 @@ plt.show()
 x.grad.zero_()
 y.sum().backward()
 xyplot(x, x.grad, 'grad of sigmoid')
+plt.show()
+
+# %%
+# tanh
+y = x.tanh()
+xyplot(x, y, 'tanh')
+plt.show()
+
+x.grad.zero_()
+y.sum().backward()
+xyplot(x, x.grad, 'grad of tanh')
 plt.show()

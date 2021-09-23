@@ -30,3 +30,15 @@ vpolyval = np.vectorize(mypolyval, excluded=['p'])
 
 output2 = vpolyval(p=[1, 2, 3], x=[0, 1])
 print(output2)
+
+# %%
+import torch
+
+x = torch.Tensor([1, 2, 3])
+x.requires_grad_(True)
+
+y = x ** 2
+
+y.sum().backward()
+
+x.grad
