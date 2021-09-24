@@ -42,3 +42,10 @@ y = x ** 2
 y.sum().backward()
 
 x.grad
+
+# %%
+for i in range(0, 10, 2):
+    print(i)
+# for(int i=0;i<10;i+=2){
+#   cout<<i<<endl;
+# }
