@@ -76,7 +76,15 @@ conda install matplotlib
 
 ### 2. 项目初始化
 
-首先运行gpuInfo.py查看你的GPU信息
+下载此项目，**安装Git**，并在你想放置此项目的文件夹下，右键使用Git Bash Here对代码进行克隆
+
+```
+$ git clone https://github.com/tweedlemoon/TorchActualCombat.git
+```
+
+进入到项目文件夹中，如果你使用pycharm，建议直接右键Open folder as pycharm project  
+
+运行gpuInfo.py查看你的GPU信息
 
 ```
 $ python gpuInfo.py
