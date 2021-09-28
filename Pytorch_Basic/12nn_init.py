@@ -76,3 +76,27 @@ for name, param in net.named_parameters():
     if 'bias' in name:
         param.data += 1
         print(name, param.data)
+
+# %%
+# 在有些情况下，我们希望在多个层之间共享模型参数。
+# 4.1.3节提到了如何共享模型参数: Module类的forward函数里多次调用同一个层。
+# 此外，如果我们传入Sequential的模块是同一个Module实例的话参数也是共享的，下面来看一个例子:
+
+# 这是一个不带偏倚的线性模型
+linear = nn.Linear(1, 1, bias=False)
+net = nn.Sequential(linear, linear)
+print(net)
+for name, param in net.named_parameters():
+    # 初始化成固定值3
+    init.constant_(param, val=3)
+    print(name, param.data)
+
+print(id(net[0]) == id(net[1]))
+print(id(net[0].weight) == id(net[1].weight))
+
+# 因为模型参数里包含了梯度，所以在反向传播计算时，这些共享的参数的梯度是累加的
+x = torch.ones(1, 1)
+y = net(x).sum()
+print(y)
+y.backward()
+print(net[0].weight.grad)  # 单次梯度是3，两次所以就是6
