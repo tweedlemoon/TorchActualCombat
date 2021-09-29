@@ -29,6 +29,7 @@ y.mean().item()
 class MyListDense(nn.Module):
     def __init__(self):
         super().__init__()
+        # [1 for i in range(0, 3, 1)]结果就返回list[1, 1, 1]
         self.params = nn.ParameterList([nn.Parameter(torch.randn(4, 4)) for i in range(3)])
         self.params.append(nn.Parameter(torch.randn(4, 1)))
 
@@ -51,8 +52,12 @@ class MyDictDense(nn.Module):
             'linear1': nn.Parameter(torch.randn(4, 4)),
             'linear2': nn.Parameter(torch.randn(4, 1))
         })
+        # python的dict操作，使用update将两个字典合在一起
         self.params.update({'linear3': nn.Parameter(torch.randn(4, 2))})  # 新增
+        # 同dict操作，直接指定新键值再直接赋值即可往里添加
+        self.params['linear4'] = nn.Parameter(torch.randn(4, 3))
 
+    # 自行定义的前向计算，默认choice为linear1，返回x和linear1的乘积
     def forward(self, x, choice='linear1'):
         return torch.mm(x, self.params[choice])
 
@@ -60,11 +65,13 @@ class MyDictDense(nn.Module):
 net = MyDictDense()
 print(net)
 
-# %%
 x = torch.ones(1, 4)
-print(net(x, 'linear1'))
+# 这里net后面是传入forward函数的变量，意思类似于第四行
+# 默认是linear1
+print(net(x, 'linear1'))  # 等价于print(net(x))
 print(net(x, 'linear2'))
 print(net(x, 'linear3'))
+print(net(x=x, choice='linear4'))
 
 # %%
 net = nn.Sequential(

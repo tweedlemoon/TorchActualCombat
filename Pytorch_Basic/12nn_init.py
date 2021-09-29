@@ -5,7 +5,6 @@ from torch.nn import init
 
 # %%
 net = nn.Sequential(nn.Linear(4, 3), nn.ReLU(), nn.Linear(3, 1))  # pytorch已进行默认初始化
-
 print(net)
 X = torch.rand(2, 4)
 Y = net(X).sum()
@@ -100,3 +99,26 @@ y = net(x).sum()
 print(y)
 y.backward()
 print(net[0].weight.grad)  # 单次梯度是3，两次所以就是6
+
+# %%
+# 所以要避免上述情况，则把两个线性层命名为不一样的，否则他们会在内存里指向同一个位置
+# 这是一个不带偏倚的线性模型
+linear1 = nn.Linear(1, 1, bias=False)
+linear2 = nn.Linear(1, 1, bias=False)
+net = nn.Sequential(linear1, linear2)
+print(net)
+for name, param in net.named_parameters():
+    # 初始化成固定值3
+    init.constant_(param, val=3)
+    print(name, param.data)
+
+# 由于两个模型并不相同，所以二者的id不同
+print(id(net[0]) == id(net[1]))
+print(id(net[0].weight) == id(net[1].weight))
+
+# 因为模型参数里包含了梯度，所以在反向传播计算时，这些共享的参数的梯度是累加的
+x = torch.ones(1, 1)
+y = net(x).sum()
+print(y)
+y.backward()
+print(net[0].weight.grad)  # 这次梯度正常为3
