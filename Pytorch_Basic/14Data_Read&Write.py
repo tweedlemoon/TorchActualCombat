@@ -2,10 +2,18 @@
 import torch
 from torch import nn
 import os
+import sys
 
 # %%
 # 演示Tensor的读写
-directory = os.path.abspath(os.path.join(os.getcwd(), '..', 'Datasets', '14_TempSaveData'))
+
+if sys.platform.startswith('win'):
+    # 如果是windows
+    directory = os.path.join(os.getcwd(), 'Datasets', '14_TempSaveData')
+else:
+    # linux
+    directory = os.path.join(os.getcwd(), '..', 'Datasets', '14_TempSaveData')
+
 if not os.path.exists(directory):
     os.makedirs(directory)
 
