@@ -35,6 +35,7 @@ xy = torch.load(os.path.join(directory, 'xy_dict.pt'))
 # xy
 
 # %%
+# 注意，只有具有可学习参数的层(卷积层、线性层等)才有state_dict中的条目。
 class MLP(nn.Module):
     def __init__(self):
         super().__init__()
@@ -51,10 +52,30 @@ net = MLP()
 net.state_dict()
 
 # %%
+# 优化器(optim)也有一个state_dict，其中包含关于优化器状态以及所使用的超参数的信息。
 optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 optimizer.state_dict()
 
 # %%
+# 保存方式1（仅参数）
 # torch.save(model.state_dict(), PATH)  # 推荐的文件后缀名是pt或pth
+# 加载方式1
 # model = TheModelClass(*args, **kwargs)
 # model.load_state_dict(torch.load(PATH))
+
+# 保存方式2（整个模型）
+# torch.save(model, PATH)
+# 加载方式2
+# model = torch.load(PATH)
+
+# 第一种实践
+X = torch.randn(2, 3)
+Y = net(X)
+
+PATH = os.path.join(directory, 'net.pt')
+torch.save(net.state_dict(), PATH)
+
+net2 = MLP()
+net2.load_state_dict(torch.load(PATH))
+Y2 = net2(X)
+print(Y2 == Y)
