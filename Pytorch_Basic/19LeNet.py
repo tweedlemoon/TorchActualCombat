@@ -17,6 +17,23 @@ import d2lzh_pytorch as d2l
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
+# LeNet的大致结构为
+# 1.卷积2.池化3.卷积4.池化5.卷积6.全连接
+# 这里由于输入不是32*32，是28*28，所以省去了一组卷积操作
+# 变为1.卷积2.池化3.卷积4.池化5.全连接
+# LeNet:10分类问题
+
+# 具体结构为:
+# 28*28(input)
+# ->6@24*24(conv 6@5*5)
+# ->6@12*12(pooling 2*2(2,2))
+# ->16@8*8(conv 16@5*5)
+# ->16@4*4(pooling 2*2(2,2))
+# ->256(view平铺)
+# ->120(Linear)
+# ->84(Linear)
+# ->10(Linear)(output)
+
 class LeNet(nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
@@ -87,6 +104,7 @@ show_data(X[0:9], true_labels)
 
 # %%
 # 本函数已保存在d2lzh_pytorch包中方便以后使用。该函数将被逐步改进。
+# 此函数的作用是估计准确率
 def evaluate_accuracy(data_iter, net, device=None):
     if device is None and isinstance(net, torch.nn.Module):
         # 如果没指定device就使用net的device
