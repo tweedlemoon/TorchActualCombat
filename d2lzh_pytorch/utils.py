@@ -1219,3 +1219,11 @@ def predict_sentiment(net, vocab, sentence):
     sentence = torch.tensor([vocab.stoi[word] for word in sentence], device=device)
     label = torch.argmax(net(sentence.view((1, -1))), dim=1)
     return 'positive' if label.item() == 1 else 'negative'
+
+
+def create_directory():
+    """生成数据路径"""
+    directory = os.path.abspath(os.path.join(os.getcwd(), "../", "Datasets"))
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    return directory
