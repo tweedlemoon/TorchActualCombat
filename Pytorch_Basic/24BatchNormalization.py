@@ -99,12 +99,7 @@ net = nn.Sequential(
 
 batch_size = 256
 
-# 读数据
-directory = os.path.abspath(os.path.join(os.getcwd(), "../", "Datasets"))
-if not os.path.exists(directory):
-    os.makedirs(directory)
-
-train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size=batch_size, root=directory)
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size=batch_size, root=d2l.utils.create_directory())
 
 lr, num_epochs = 0.001, 5
 optimizer = torch.optim.Adam(net.parameters(), lr=lr)
