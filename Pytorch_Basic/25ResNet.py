@@ -29,3 +29,11 @@ class Residual(nn.Module):  # 本类已保存在d2lzh_pytorch包中方便以后�
         if self.conv3:
             X = self.conv3(X)
         return F.relu(Y + X)
+
+
+blk = Residual(3, 3)
+X = torch.rand((4, 3, 6, 6))
+blk(X).shape  # torch.Size([4, 3, 6, 6])
+
+blk = Residual(3, 6, use_1x1conv=True, stride=2)
+blk(X).shape  # torch.Size([4, 6, 3, 3])
