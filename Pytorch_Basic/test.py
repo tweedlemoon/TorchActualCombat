@@ -46,6 +46,16 @@ x.grad
 # %%
 for i in range(0, 10, 2):
     print(i)
+
+
 # for(int i=0;i<10;i+=2){
 #   cout<<i<<endl;
 # }
+
+# %%
+def demo(*param):
+    avg = sum(i for i in param) / len(param)
+    return avg
+
+
+print(demo(1, 2, 3))
