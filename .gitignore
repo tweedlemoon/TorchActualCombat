@@ -3,3 +3,4 @@
 mnist_project/mnist_data
 notebook/.ipynb_checkpoints/
 Datasets/
+LogFiles/*
