@@ -43,12 +43,16 @@ class EmailSender:
         读入信息
         :return:self.message
         """
-        with open(self.logAdd, 'r') as f:
-            for line in f.readlines():
-                self.message += line
+        if self.logAdd != '':
+            with open(self.logAdd, 'r') as f:
+                for line in f.readlines():
+                    self.message += line
 
-            f.close()
-        return self.message
+                f.close()
+            return self.message
+        else:
+            self.message = ''
+            return self.message
 
     def sendResultEmail(self):
         """
@@ -95,7 +99,6 @@ class EmailSender:
             except Exception:  # 如果 try 中的语句没有执行，则会执行下面的 ret=False
                 ret = False
         return ret
-        pass
 
     def getCurrentTime(self):
         """
