@@ -1,6 +1,6 @@
 .idea/
 */__pycache__
 mnist_project/mnist_data
-notebook/.ipynb_checkpoints/
+*/.ipynb_checkpoints/
 Datasets/
 LogFiles/*
