@@ -17,6 +17,8 @@ if __name__ == '__main__':
     logName = os.path.splitext(os.path.basename(sys.argv[0]))[0] + '_' + datetime.datetime.now().strftime(
         '%Y-%m-%d_%H-%M-%S') + '_log.txt'
     logFilePath = os.getcwd() + '/../LogFiles/' + logName
+    if not os.path.exists(os.getcwd() + '/../LogFiles/'):
+        os.makedirs(os.getcwd() + '/../LogFiles/')
     logFile = open(logFilePath, 'w', buffering=1)
     try:
         # 输出重定向
