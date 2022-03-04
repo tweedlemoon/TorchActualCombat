@@ -8,6 +8,7 @@ from Network_Learning.fcn.src import fcn_resnet50
 from Network_Learning.fcn.train_utils import train_one_epoch, evaluate, create_lr_scheduler
 from Network_Learning.fcn.my_dataset import VOCSegmentation
 import Network_Learning.fcn.transforms as T
+from Network_Learning.fcn.hyper_parameters import *
 
 
 class SegmentationPresetTrain:
@@ -42,6 +43,7 @@ class SegmentationPresetEval:
 
 
 def get_transform(train):
+    # 用于判定是train还是eval，如果train=True则返回SegmentationPresetTrain函数否则SegmentationPresetEval
     base_size = 520
     crop_size = 480
 
@@ -52,7 +54,7 @@ def create_model(aux, num_classes, pretrain=True):
     model = fcn_resnet50(aux=aux, num_classes=num_classes)
 
     if pretrain:
-        weights_dict = torch.load("./fcn_resnet50_coco.pth", map_location='cpu')
+        weights_dict = torch.load(FCN_ResNet50_COCO, map_location='cpu')
 
         if num_classes != 21:
             # 官方提供的预训练权重是21类(包括背景)
@@ -89,7 +91,8 @@ def main(args):
                                   year="2012",
                                   transforms=get_transform(train=False),
                                   txt_name="val.txt")
-
+    # 这里把workernum以cpu数量，batchsize和8中的最小值进行选取
+    # numworkers主要用于数据导入，数量恰好才是最高效的
     num_workers = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])
     train_loader = torch.utils.data.DataLoader(train_dataset,
                                                batch_size=batch_size,
@@ -144,7 +147,7 @@ def main(args):
         val_info = str(confmat)
         print(val_info)
         # write into txt
-        with open(results_file, "a") as f:
+        with open(os.path.join(args.result_root, results_file), "a") as f:
             # 记录每个epoch对应的train_loss、lr以及验证集各指标
             train_info = f"[epoch: {epoch}]\n" \
                          f"train_loss: {mean_loss:.4f}\n" \
@@ -169,21 +172,21 @@ def parse_args():
     import argparse
     parser = argparse.ArgumentParser(description="pytorch fcn training")
 
-    parser.add_argument("--data-path", default="/data/", help="VOCdevkit root")
+    parser.add_argument("--data-path", default=VOC_Dataset_Root, help="VOCdevkit root")
     parser.add_argument("--num-classes", default=20, type=int)
     parser.add_argument("--aux", default=True, type=bool, help="auxilier loss")
     parser.add_argument("--device", default="cuda", help="training device")
-    parser.add_argument("-b", "--batch-size", default=4, type=int)
-    parser.add_argument("--epochs", default=30, type=int, metavar="N",
+    parser.add_argument("-b", "--batch-size", default=Batch_Size, type=int)
+    parser.add_argument("--epochs", default=Epoch, type=int, metavar="N",
                         help="number of total epochs to train")
 
-    parser.add_argument('--lr', default=0.0001, type=float, help='initial learning rate')
+    parser.add_argument('--lr', default=Initial_Learning_Rate, type=float, help='initial learning rate')
     parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
                         help='momentum')
     parser.add_argument('--wd', '--weight-decay', default=1e-4, type=float,
                         metavar='W', help='weight decay (default: 1e-4)',
                         dest='weight_decay')
-    parser.add_argument('--print-freq', default=10, type=int, help='print frequency')
+    parser.add_argument('--print-freq', default=Print_Frequency, type=int, help='print frequency')
     parser.add_argument('--resume', default='', help='resume from checkpoint')
     parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                         help='start epoch')
@@ -191,12 +194,16 @@ def parse_args():
     parser.add_argument("--amp", default=False, type=bool,
                         help="Use torch.cuda.amp for mixed precision training")
 
+    parser.add_argument("--result-root", default=Result_Path, type=str, help="Save the result of the program")
+
     args = parser.parse_args()
 
     return args
 
 
 if __name__ == '__main__':
+    # 规定使用哪个GPU
+    os.environ["CUDA_VISIBLE_DEVICES"] = Which_GPU
     args = parse_args()
 
     if not os.path.exists("./save_weights"):
