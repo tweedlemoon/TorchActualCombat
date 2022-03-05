@@ -194,7 +194,7 @@ def parse_args():
     parser.add_argument("--amp", default=False, type=bool,
                         help="Use torch.cuda.amp for mixed precision training")
 
-    parser.add_argument("--result-root", default=Result_Path, type=str, help="Save the result of the program")
+    parser.add_argument("--result-root", default=Result_Root, type=str, help="Save the result of the program")
 
     args = parser.parse_args()
 

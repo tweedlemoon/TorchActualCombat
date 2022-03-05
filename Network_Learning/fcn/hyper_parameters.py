@@ -12,7 +12,7 @@ FCN_ResNet101_COCO = "/Data20T/data20t/data20t/Liuyifei/Datasets/fcn_trained/fcn
 # 结果存放位置
 if not os.path.exists("./results"):
     os.mkdir("./results")
-Result_Path = "./results"
+Result_Root = "./results"
 
 # parameters
 # 使用哪个GPU
