@@ -16,7 +16,7 @@ Result_Root = "./results"
 
 # parameters
 # 使用哪个GPU
-Which_GPU = "1"
+Which_GPU = "3"
 # 最初学习率
 Initial_Learning_Rate = 0.0001
 # batchsize
