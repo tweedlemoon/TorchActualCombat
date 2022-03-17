@@ -4,10 +4,10 @@ import datetime
 
 import torch
 
-from src import UNet
-from train_utils import train_one_epoch, evaluate, create_lr_scheduler
-from my_dataset import DriveDataset
-import transforms as T
+from Network_Learning.unet.src import UNet
+from Network_Learning.unet.train_utils import train_one_epoch, evaluate, create_lr_scheduler
+from Network_Learning.unet.my_dataset import DriveDataset
+import Network_Learning.unet.transforms as T
 
 
 class SegmentationPresetTrain:
