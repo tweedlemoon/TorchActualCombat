@@ -8,6 +8,7 @@ from Network_Learning.unet.src import UNet
 from Network_Learning.unet.train_utils import train_one_epoch, evaluate, create_lr_scheduler
 from Network_Learning.unet.my_dataset import DriveDataset
 import Network_Learning.unet.transforms as T
+from Network_Learning.unet.hyper_parameters import *
 
 
 class SegmentationPresetTrain:
@@ -128,7 +129,7 @@ def main(args):
         print(val_info)
         print(f"dice coefficient: {dice:.3f}")
         # write into txt
-        with open(results_file, "a") as f:
+        with open(os.path.join(args.result_root, results_file), "a") as f:
             # 记录每个epoch对应的train_loss、lr以及验证集各指标
             train_info = f"[epoch: {epoch}]\n" \
                          f"train_loss: {mean_loss:.4f}\n" \
@@ -164,21 +165,21 @@ def parse_args():
     import argparse
     parser = argparse.ArgumentParser(description="pytorch unet training")
 
-    parser.add_argument("--data-path", default="./", help="DRIVE root")
+    parser.add_argument("--data-path", default=Data_Path, type=str, help="DRIVE root")
     # exclude background
     parser.add_argument("--num-classes", default=1, type=int)
     parser.add_argument("--device", default="cuda", help="training device")
-    parser.add_argument("-b", "--batch-size", default=4, type=int)
-    parser.add_argument("--epochs", default=200, type=int, metavar="N",
+    parser.add_argument("-b", "--batch-size", default=Batch_Size, type=int)
+    parser.add_argument("--epochs", default=Epoch, type=int, metavar="N",
                         help="number of total epochs to train")
 
-    parser.add_argument('--lr', default=0.01, type=float, help='initial learning rate')
+    parser.add_argument('--lr', default=Initial_Learning_Rate, type=float, help='initial learning rate')
     parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
                         help='momentum')
     parser.add_argument('--wd', '--weight-decay', default=1e-4, type=float,
                         metavar='W', help='weight decay (default: 1e-4)',
                         dest='weight_decay')
-    parser.add_argument('--print-freq', default=1, type=int, help='print frequency')
+    parser.add_argument('--print-freq', default=Print_Frequency, type=int, help='print frequency')
     parser.add_argument('--resume', default='', help='resume from checkpoint')
     parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                         help='start epoch')
@@ -186,6 +187,8 @@ def parse_args():
     # Mixed precision training parameters
     parser.add_argument("--amp", default=False, type=bool,
                         help="Use torch.cuda.amp for mixed precision training")
+
+    parser.add_argument("--result-root", default=Result_Root, type=str, help="Save the result of the program")
 
     args = parser.parse_args()
 

@@ -6,3 +6,5 @@ Datasets/
 LogFiles/*
 Network_Learning/fcn/results/*
 Network_Learning/fcn/save_weights/*
+Network_Learning/unet/results/*
+Network_Learning/unet/save_weights/*
