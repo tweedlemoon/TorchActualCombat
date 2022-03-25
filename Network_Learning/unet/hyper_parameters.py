@@ -9,9 +9,9 @@ if platform.system() == "Windows":
     Which_GPU = "0"
 
 else:
-    Data_Path = "/Data20T/data20t/data20t/Liuyifei/Datasets"
+    Data_Path = "/root/autodl-tmp"
     # 使用哪个GPU
-    Which_GPU = "3"
+    Which_GPU = "0"
 
 # 结果存放位置
 if not os.path.exists("./results"):
@@ -25,6 +25,6 @@ Initial_Learning_Rate = 0.01
 # Batch_Size = 16
 Batch_Size = 4
 # Epoch
-Epoch = 4
+Epoch = 200
 # 打印的频率
 Print_Frequency = 1

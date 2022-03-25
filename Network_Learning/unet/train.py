@@ -45,7 +45,9 @@ class SegmentationPresetEval:
 
 
 def get_transform(train, mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)):
+    # 此数据集的每张图片都是565*584形状的图片。
     base_size = 565
+    # 裁剪尺寸为480*480，也就是说Unet输入的图片大小固定为480*480
     crop_size = 480
 
     if train:
@@ -97,6 +99,8 @@ def main(args):
     model = create_model(num_classes=num_classes)
     model.to(device)
 
+    print(model)
+
     params_to_optimize = [p for p in model.parameters() if p.requires_grad]
 
     optimizer = torch.optim.SGD(
@@ -143,6 +147,10 @@ def main(args):
             else:
                 continue
 
+        # 在存储文件中多加了一些属性，这是为了checkpoint特制的，如果程序中断，可以通过输入参数中的resume来恢复训练
+        # 故验证读取pth文件时，只需要读取model一个部分
+        # model = UNet(in_channels=3, num_classes=classes + 1, base_c=32)
+        # model.load_state_dict(torch.load(weights_path, map_location='cpu')['model'])
         save_file = {"model": model.state_dict(),
                      "optimizer": optimizer.state_dict(),
                      "lr_scheduler": lr_scheduler.state_dict(),

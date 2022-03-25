@@ -6,10 +6,13 @@ from torchvision import transforms
 import numpy as np
 from PIL import Image
 
-from src import UNet
+from Network_Learning.unet.src import UNet
+from Network_Learning.unet.hyper_parameters import *
 
 
 def time_synchronized():
+    # 计时操作中一定要带synchronize，此函数的作用是等待GPU任务完成后同步回到Python进行语句执行
+    # 否则就直接异步走了，GPU干GPU的，python计时计时自己的
     torch.cuda.synchronize() if torch.cuda.is_available() else None
     return time.time()
 
@@ -17,8 +20,8 @@ def time_synchronized():
 def main():
     classes = 1  # exclude background
     weights_path = "./save_weights/best_model.pth"
-    img_path = "./DRIVE/test/images/01_test.tif"
-    roi_mask_path = "./DRIVE/test/mask/01_test_mask.gif"
+    img_path = Data_Path + "DRIVE/test/images/01_test.tif"
+    roi_mask_path = Data_Path + "DRIVE/test/mask/01_test_mask.gif"
     assert os.path.exists(weights_path), f"weights {weights_path} not found."
     assert os.path.exists(img_path), f"image {img_path} not found."
     assert os.path.exists(roi_mask_path), f"image {roi_mask_path} not found."
@@ -31,7 +34,7 @@ def main():
     print("using {} device.".format(device))
 
     # create model
-    model = UNet(in_channels=3, num_classes=classes+1, base_c=32)
+    model = UNet(in_channels=3, num_classes=classes + 1, base_c=32)
 
     # load weights
     model.load_state_dict(torch.load(weights_path, map_location='cpu')['model'])

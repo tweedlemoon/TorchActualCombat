@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-import train_utils.distributed_utils as utils
+import Network_Learning.unet.train_utils.distributed_utils as utils
 from .dice_coefficient_loss import dice_loss, build_target
 
 
@@ -43,6 +43,7 @@ def evaluate(model, data_loader, device, num_classes):
 
 def train_one_epoch(model, optimizer, data_loader, device, epoch, num_classes,
                     lr_scheduler, print_freq=10, scaler=None):
+    # model.train()的作用是为了启用batch normalization和drop out
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
