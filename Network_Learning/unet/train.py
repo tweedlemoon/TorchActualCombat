@@ -1,9 +1,10 @@
 import os
+import sys
 import time
 import datetime
-
 import torch
 
+sys.path.append("../..")
 from Network_Learning.unet.src import UNet
 from Network_Learning.unet.train_utils import train_one_epoch, evaluate, create_lr_scheduler
 from Network_Learning.unet.my_dataset import DriveDataset
@@ -111,6 +112,7 @@ def main(args):
     scaler = torch.cuda.amp.GradScaler() if args.amp else None
 
     # 创建学习率更新策略，这里是每个step更新一次(不是每个epoch)
+    # 一个step在这里就是数据总数/batchsize，20张图片，batchsize设置为4，那么step就是5步
     lr_scheduler = create_lr_scheduler(optimizer, len(train_loader), args.epochs, warmup=True)
 
     if args.resume:
