@@ -3,8 +3,14 @@ import sys
 import time
 import datetime
 import torch
-
+# 这里是将TorchActrualCombat设置为path路径，然后直接就能import Network_Learning下的东西了
 sys.path.append("../..")
+
+# 这俩是放在一块的，只有将.加入了path，才能直接从src中导入包
+# 但是无论如何推荐相对引用
+# sys.path.append(".")
+# from src import UNet
+
 from Network_Learning.unet.src import UNet
 from Network_Learning.unet.train_utils import train_one_epoch, evaluate, create_lr_scheduler
 from Network_Learning.unet.my_dataset import DriveDataset

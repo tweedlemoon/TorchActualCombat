@@ -23,7 +23,7 @@ Result_Root = "./results"
 Initial_Learning_Rate = 0.01
 # batchsize
 # Batch_Size = 16
-Batch_Size = 4
+Batch_Size = 2
 # Epoch
 Epoch = 200
 # 打印的频率
