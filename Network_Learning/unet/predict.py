@@ -19,7 +19,7 @@ def time_synchronized():
 
 def main():
     classes = 1  # exclude background
-    weights_path = "./save_weights/best_model.pth"
+    weights_path = "./save_weights/best_model_mine.pth"
     img_path = Data_Path + "DRIVE/test/images/01_test.tif"
     roi_mask_path = Data_Path + "DRIVE/test/mask/01_test_mask.gif"
     assert os.path.exists(weights_path), f"weights {weights_path} not found."
@@ -56,10 +56,10 @@ def main():
 
     model.eval()  # 进入验证模式
     with torch.no_grad():
-        # init model
-        img_height, img_width = img.shape[-2:]
-        init_img = torch.zeros((1, 3, img_height, img_width), device=device)
-        model(init_img)
+        # # init model
+        # img_height, img_width = img.shape[-2:]
+        # init_img = torch.zeros((1, 3, img_height, img_width), device=device)
+        # model(init_img)
 
         t_start = time_synchronized()
         output = model(img.to(device))
